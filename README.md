@@ -15,7 +15,7 @@
 
 ---
 ## 기능 설명
-[스프링부트 어노테이션 설명](https://github.com/Young14482/customerqna/blob/master/src/main/java/kr/co/greenart/web/README.md)
+[스프링부트 어노테이션 설명](https://github.com/Young14482/customerqna/blob/master/src/main/java/kr/co/greenart/web)
 
 
 <p align="center">

@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS customerqna (
 
 INSERT INTO customerqna (title, content, username, password, views, created_at, updated_at, is_secure, is_deleted)
 VALUES 
-    ('첫 번째 질문', '첫 번째 질문의 내용입니다.', 'user1', 'password1', 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 0),
+    ('첫 번째 질문', '첫 번째 질문의 내용입니다.', 'user1', 'password1', 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 0),
     ('두 번째 질문', '두 번째 질문의 내용입니다.', 'user2', 'password2', 20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 0),
     ('세 번째 질문', '세 번째 질문의 내용입니다.', 'user3', 'password3', 15, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 0),
     ('네 번째 질문', '네 번째 질문의 내용입니다.', 'user4', 'password4', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 0),
@@ -48,5 +48,5 @@ VALUES
     ('18 번째 질문', '10 번째 질문의 내용입니다.', 'user10', 'password10', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 0),
     ('19 번째 질문', '10 번째 질문의 내용입니다.', 'user10', 'password10', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 0),
     ('20번째 질문', '10 번째 질문의 내용입니다.', 'user10', 'password10', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 0),
-    ('21 번째 질문', '11 번째 질문의 내용입니다.', 'user11', 'password11', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 0);
+    ('21 번째 질문', '11 번째 질문의 내용입니다.', 'user11', 'password11', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 0);
 

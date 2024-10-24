@@ -64,7 +64,13 @@
 
     <label for="content">글 내용:</label>
     <textarea id="content" name="content" rows="5" required></textarea>
-
+    
+  	<label for="secure">공개 설정:</label>
+    <select id="secure" name="visibility" required>
+        <option value="false">공개</option>
+        <option value="true">비공개</option>
+    </select>
+    
     <input type="submit" value="작성 완료">
 </form>
 

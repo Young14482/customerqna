@@ -16,28 +16,32 @@ import org.apache.ibatis.annotations.Update;
 public interface QnaMapper {
 	// 글작성
 	@Insert({
-		"INSERT INTO customerqna (title, content, username, password)"
-			, "VALUES (#{title}, #{content}, #{username}, #{password})"
+		"INSERT INTO customerqna (title, content, username, password, is_secure)"
+			, "VALUES (#{title}, #{content}, #{username}, #{password}, #{secure})"
 			})
 	@Options(useGeneratedKeys = true, keyProperty = "articleId") // h2 버젼 AI된 id가져오기
 	int save(QNA qna);
 	
 	// 게시글 목록 >> limit와 offset을 통해 페이지 구현 준비
 	@Select({
-		"SELECT article_id, title, content, username, views, is_secure FROM customerqna"
+		"SELECT * FROM customerqna"
 		, "ORDER BY article_id DESC"
 		, "LIMIT #{pageSize} OFFSET #{offset}"
 	})
 	@Results(id = "qnaList"
 		, value = {
-				@Result(column = "article_id", property = "articleId")
+				@Result(column = "article_id", property = "articleId", id = true)
 				, @Result(column = "title", property = "title")
+				, @Result(column = "password", property = "password")
 				, @Result(column = "content", property = "content")
 				, @Result(column = "username", property = "username")
 				, @Result(column = "views", property = "views")
+				, @Result(column = "created_at", property = "createdAt")
+				, @Result(column = "update_at", property = "updateAt")
 				, @Result(column = "is_secure", property = "secure")
+				, @Result(column = "is_delete", property = "delete")
 		}
-			)
+	)
 	List<QNA> findAll(int pageSize, int offset);
 	
 	// 게시글 조회 시 is_secure의 값이 false인 행만 조회
@@ -49,20 +53,30 @@ public interface QnaMapper {
 	})
 	@ResultMap("qnaList")
 	List<QNA> findBySecureIsFalse(int pageSize, int offset);
-
-	// TODO : 선생님이랑 아직안함 >> 혼자 만든 거는 존재
-	// 게시글 조회 (id로 검색, title, content, username)
-	//TODO : 맨끝의 false 나중에 mysql전환할때 0으로
-	@Select("SELECT title, content, username FROM customerqna WHERE article_id = #{articleId} AND is_secure = false")
-	QNA findByPk(int articleId);
-	
-	// 게시글의 비밀 여부 조회 (is_secure)
-	@Select("SELECT is_secure FROM customerqna WHERE article_id = #{articleId}")
-	void findSecureByPk(int articleId);
 	
 	// views count 수정(1 증가)
 	@Update("UPDATE customerqna SET views = (views + 1) WHERE article_id = #{articleId}")
-	void updateCount(int articleId);
+	int updateCount(int articleId);
+
+	// TODO : 선생님이랑 아직안함 >> 혼자 만든 거는 존재
+	// 게시글 조회 (id로 검색, title, content, username)
+	// TODO : 맨끝의 false 나중에 mysql전환할때 0으로
+	@Select("SELECT * FROM customerqna WHERE article_id = #{articleId}")
+	@Results(id = "qnaMapping"
+	, value = {
+			@Result(column = "article_id", property = "articleId", id = true)
+			, @Result(column = "title", property = "title")
+			, @Result(column = "password", property = "password")
+			, @Result(column = "content", property = "content")
+			, @Result(column = "username", property = "username")
+			, @Result(column = "views", property = "views")
+			, @Result(column = "created_at", property = "createdAt")
+			, @Result(column = "update_at", property = "updateAt")
+			, @Result(column = "is_secure", property = "secure")
+			, @Result(column = "is_delete", property = "delete")
+		}
+	)
+	QNA findById(Integer articleId);
 	
 	// 글 논리 삭제(pk 및 password일치) : is delete -> 1
 	@Update("UPDATE customerqna SET is_deleted = 1 WHERE article_id = #{article_id} AND password = #{password}")

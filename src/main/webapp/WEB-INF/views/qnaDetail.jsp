@@ -8,15 +8,15 @@
 <title>상세정보</title>
 </head>
 <body>
-	<c:if test="${empty QNA}">
-		<p>제하하하하하하하하하하하하하하하 네놈의 글 탐나는걸!!! 크로우즈!!!!!!</p>
+	<article>
+		<header>
+			<h3>제목: ${ QNA.title }</h3>
+			<p>조회수: ${ QNA.views }</p>
+			<p>작성자: ${ QNA.username }</p>
+		</header>
+		<h4>내용</h4>
+		<p>${ QNA.content }</p>
 		<a href="/qna">위하하하하하하 선장 힘힘열매의 힘 대단하다고!!!!!</a>
-	</c:if>
-	<c:if test="${not empty QNA}">
-		<p>제목: ${ QNA.title }</p>
-		<p>내용: ${ QNA.content }</p>
-		<p>작성자: ${ QNA.username }</p>
-		<a href="/qna">위하하하하하하 선장 힘힘열매의 힘 대단하다고!!!!!</a>
-	</c:if>
+	</article>
 </body>
 </html>

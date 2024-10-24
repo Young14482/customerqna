@@ -25,7 +25,9 @@
 			</thead>
 			<tbody>
 				<c:forEach var="qna" items="${qnaList}">
-					<tr onclick="redirectTo('/qna/${qna.articleId}')">
+					   <tr 
+                        onclick="redirectTo('${qna.articleId}', ${qna.secure}, this.dataset.password)" 
+                        data-password="${qna.password}">
 						<td>${qna.articleId}</td>
 						<td>${qna.title}</td>
 						<td>${qna.username}</td>
@@ -42,14 +44,19 @@
 					<c:param name="page">${num}</c:param>
 					<c:param name="size">${size}</c:param>
 				</c:url>
-				<a href="${pages}"
-					style="${num == currentPage ? 'font-weight: bold;' : ''}">
-					${num + 1} </a>
+				<a href="${pages}" style="${num == currentPage ? 'font-weight: bold;' : ''}"> ${num + 1} </a>
 			</c:forEach>
 		</nav>
 	</c:if>
 	<c:if test="${empty qnaList}">
 		<p>게시글이 없습니다.</p>
 	</c:if>
+	
+	<dialog id="passwordDialog">
+		<p>비밀번호를 입력하세요:</p>
+		<input type="password" id="passwordInput" />
+		<button id="confirmButton">확인</button>
+		<button onclick="document.getElementById('passwordDialog').close()">취소</button>
+	</dialog>
 </body>
 </html>

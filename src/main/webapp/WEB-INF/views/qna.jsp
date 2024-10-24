@@ -25,16 +25,14 @@
 			</thead>
 			<tbody>
 				<c:forEach var="qna" items="${qnaList}">
-					   <tr 
-                        onclick="redirectTo('${qna.articleId}', ${qna.secure}, this.dataset.password)" 
-                        data-password="${qna.password}">
-						<td>${qna.articleId}</td>
-						<td>${qna.title}</td>
-						<td>${qna.username}</td>
-						<td>${qna.views}</td>
-						<td>${qna.createdAt}</td>
-					</tr>
-				</c:forEach>
+				    <tr onclick="fetchPasswordAndRedirect('${qna.articleId}', ${qna.secure})">
+				        <td>${qna.articleId}</td>
+				        <td>${qna.title}</td>
+				        <td>${qna.username}</td>
+				        <td>${qna.views}</td>
+				        <td>${qna.createdAt}</td>
+				    </tr>
+				</c:forEach>			
 			</tbody>
 		</table>
 		<!-- 페이지 구현하기  -->
@@ -53,10 +51,10 @@
 	</c:if>
 	
 	<dialog id="passwordDialog">
-		<p>비밀번호를 입력하세요:</p>
-		<input type="password" id="passwordInput" />
-		<button id="confirmButton">확인</button>
-		<button onclick="document.getElementById('passwordDialog').close()">취소</button>
+		<h3>비밀번호 입력</h3>
+	    <input type="password" id="passwordInput" placeholder="비밀번호를 입력하세요">
+	    <button id="confirmButton">확인</button>
+	    <button onclick="document.getElementById('passwordDialog').close()">취소</button>
 	</dialog>
 </body>
 </html>

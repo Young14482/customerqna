@@ -6,8 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>고객 센터</title>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/qna.css"> <!-- CSS 파일 링크 -->
-<script src="${pageContext.request.contextPath}/static/js/qna.js" defer></script> <!-- JavaScript 파일 링크 (필요 시) -->
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/qna.css">
+<script src="${pageContext.request.contextPath}/static/js/qna.js" defer></script>
 </head>
 <body>
 	<h1>게시글 목록</h1>
@@ -30,7 +30,7 @@
 				        <td>${qna.title}</td>
 				        <td>${qna.username}</td>
 				        <td>${qna.views}</td>
-				        <td>${qna.createdAt}</td>
+				        <td>${qna.createdAtStr}</td>
 				    </tr>
 				</c:forEach>			
 			</tbody>

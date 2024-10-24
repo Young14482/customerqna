@@ -8,17 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.co.greenart.web.util.QNA_NotFoundException;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/qna")
@@ -73,7 +70,8 @@ public class QNA_Controller {
 	public String write() {
 		return "write";
 	}
-
+	
+	// 글작성
 	@PostMapping()
 	public String write(@RequestParam String username, @RequestParam String password, @RequestParam String title,
 			@RequestParam String content, @RequestParam String secure, Model model) {
@@ -86,10 +84,10 @@ public class QNA_Controller {
 		return "qnaDetail";
 	}
 
+	// articleId에 해당하는 비밀번호 가져오기
 	@GetMapping("/getPassword")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> getPassword(@RequestParam Integer articleId) {
-		// 여기서 articleId에 해당하는 비밀번호를 가져옵니다.
 		QNA byId = service.findById(articleId);
 		String password = byId.getPassword();
 
@@ -98,4 +96,18 @@ public class QNA_Controller {
 
 		return ResponseEntity.ok(response);
 	}
+	// 글 수정
+	@GetMapping("/edit/{articleId}")
+	public String getEditInfo(@PathVariable Integer articleId, Model model) {
+		QNA byId = service.findById(articleId);
+		model.addAttribute("QNA", byId);
+		return "edit";
+	}
+	@PostMapping("/edit/{articleId}")
+	public String setEdit(@PathVariable Integer articleId, Model model) {
+		QNA byId = service.findById(articleId);
+		
+		return "qnaDetail";
+	}
+	
 }

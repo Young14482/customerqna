@@ -55,4 +55,14 @@ public class QNA_ServiceImpl implements QNA_Service {
 		return mapper.count();
 	}
 
+	@Override
+	public int updateQNA(QNA qna) {
+		return mapper.updateQNA(qna);
+	}
+
+	@Override
+	public int delete(Integer artcleId) {
+		return mapper.updateDelete(artcleId);
+	}
+
 }

@@ -100,7 +100,7 @@ public class QNA_Controller {
 		QNA qna = QNA.builder().username(username).password(password).title(title).content(content).secure(isSecure)
 				.build();
 		service.save(qna);
-		model.addAttribute(qna);
+		model.addAttribute("QNA", qna);
 		return "qnaDetail";
 	}
 
@@ -124,10 +124,38 @@ public class QNA_Controller {
 		return "edit";
 	}
 	@PostMapping("/edit/{articleId}")
-	public String setEdit(@PathVariable Integer articleId, Model model) {
-		QNA byId = service.findById(articleId);
+	public String setEdit(@PathVariable Integer articleId, @RequestParam String username, @RequestParam String password, @RequestParam String title,
+			@RequestParam String content, @RequestParam String secure, Model model) {
 		
+		boolean isSecure = Boolean.parseBoolean(secure);
+		QNA origin = service.findById(articleId);
+		QNA update = QNA.builder()
+				.articleId(articleId)
+				.username(username)
+				.password(password)
+				.title(title)
+				.createdAt(origin.getCreatedAt())
+				.content(content)
+				.secure(isSecure)
+				.build();
+		
+		int result = service.updateQNA(update);
+		
+		if (result != 1) {
+			return "notFound";
+		}
+		QNA rebuild = service.findById(articleId);
+		System.out.println(rebuild.getUpdatedAt());
+		model.addAttribute("QNA", rebuild);
 		return "qnaDetail";
 	}
 	
+	@GetMapping("/delete/{articleId}")
+	public String deleteQNA(@PathVariable Integer articleId) {
+		int result = service.delete(articleId);
+		if (result != 1) {
+			return "notFound";
+		}
+		return "deleted";
+	}
 }

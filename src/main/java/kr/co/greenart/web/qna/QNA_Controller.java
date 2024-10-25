@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,19 +16,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequestMapping("/qna")
+@Slf4j
 public class QNA_Controller {
 	@Autowired
 	private QNA_Service service;
 
 	// 메인화면(페이지 요청 없을때)
 	@GetMapping()
-	public String qna(Model model) {
+	public String qna(@PageableDefault Pageable page, Model model) {
 
+		log.info("size=" + page.getPageSize());
+		log.info("page=" + page.getPageNumber());
+		log.info("offset=" + page.getOffset());
+		log.info("sort=" + page.getSort());
+		
 		List<QNA> all = service.findAll(20, 0);
 
 		int totalItems = service.count();
@@ -60,6 +71,15 @@ public class QNA_Controller {
 
 	@GetMapping("/{articleId}")
 	public String qnaDetail(@PathVariable Integer articleId, Model model) {
+		QNA byPk = service.findById(articleId);
+		if (byPk.getSecure()) {
+			return "notFound";
+		}
+		model.addAttribute("QNA", byPk);
+		return "qnaDetail";
+	}
+	@PostMapping("/{articleId}")
+	public String asdqnaDetail(@PathVariable Integer articleId, Model model) {
 		QNA byPk = service.findById(articleId);
 
 		model.addAttribute("QNA", byPk);

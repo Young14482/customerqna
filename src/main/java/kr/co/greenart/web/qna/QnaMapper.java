@@ -11,6 +11,9 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.jdbc.SQL;
+
+import kr.co.greenart.web.util.MyOrder;
 
 @Mapper
 public interface QnaMapper {
@@ -86,4 +89,15 @@ public interface QnaMapper {
 	@Select("SELECT count(*) FROM customerqna")
 	int count();
 	
+	class SQLProvider {
+		public String selectOrderBy(MyOrder order) {
+			return new SQL()
+					.SELECT("*")
+					.FROM("customerqna")
+					.ORDER_BY(order.get정렬방식())
+					.LIMIT(20)
+					.OFFSET(0).toString();
+					
+		}
+	}
 }

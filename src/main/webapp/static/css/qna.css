@@ -26,8 +26,14 @@ tr:hover {
 
 nav {
 	text-align: center;
+	padding-top: 15px;
+    padding-bottom: 10px;
+    font-size: 20px;
 }
-
+nav a {
+    text-decoration: none;
+    color: blue;
+}
 .button {
 	float: right; /* 오른쪽 정렬 */
 	margin: 20px; /* 상하 여백 */

@@ -20,12 +20,13 @@ public class DemoApplication implements CommandLineRunner{
 	// h2 데이터를 이런식으로 삽입이 가능하다
 	@Override
 	public void run(String... args) throws Exception {
-		for (int i = 22; i < 30; i++) {
+		for (int i = 22; i < 500; i++) {
 			mapper.save(QNA.builder()
 							.title("title"+i)
 							.username("username"+i)
 							.content("content"+i)
 							.password("password"+i)
+							.secure(false)
 							.build());
 		}
 	}

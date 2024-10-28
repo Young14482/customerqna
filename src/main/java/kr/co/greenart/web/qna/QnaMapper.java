@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
@@ -12,6 +13,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.jdbc.SQL;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.co.greenart.web.util.MyOrder;
 
@@ -88,7 +90,7 @@ public interface QnaMapper {
 	
 	// 전체글수
 	@Select("SELECT count(*) FROM customerqna")
-	int count();
+	int countAll();
 	
 	@Update({
 		"UPDATE customerqna SET"
@@ -102,15 +104,28 @@ public interface QnaMapper {
 			})
 	int updateQNA(QNA qna);
 	
-	class SQLProvider {
-		public String selectOrderBy(MyOrder order) {
-			return new SQL()
-					.SELECT("*")
-					.FROM("customerqna")
-					.ORDER_BY(order.get정렬방식())
-					.LIMIT(20)
-					.OFFSET(0).toString();
-					
-		}
-	}
+	 @Select("SELECT * FROM customerqna " +
+	            "WHERE title LIKE CONCAT('%', #{searchTerm}, '%') " +
+	            "ORDER BY ${sortColumn} ${sortOrder} " +
+	            "LIMIT #{limit} OFFSET #{offset}")
+	@ResultMap("qnaMapping")
+    List<QNA> searchQnas(@Param("searchTerm") String searchTerm,
+	                         @Param("sortColumn") String sortColumn,
+	                         @Param("sortOrder") String sortOrder,
+	                         @Param("limit") int limit,
+	                         @Param("offset") int offset);
+	 
+	@Select("SELECT COUNT(*) FROM customerqna " +
+			 "WHERE title LIKE CONCAT('%', #{searchTerm}, '%')")
+	int count(@Param("searchTerm") String searchTerm);
+	
+	@Select("SELECT * FROM customerqna " +			 
+			 "ORDER BY ${sortColumn} ${sortOrder} " +
+			 "LIMIT #{limit} OFFSET #{offset}")
+	@ResultMap("qnaMapping")
+	List<QNA> searchQnasSort(@Param("sortColumn") String sortColumn,
+			 @Param("sortOrder") String sortOrder,
+			 @Param("limit") int limit,
+			 @Param("offset") int offset);
+	
 }

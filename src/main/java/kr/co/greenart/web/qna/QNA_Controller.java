@@ -31,42 +31,43 @@ public class QNA_Controller {
 
 	// 메인화면(페이지 요청 없을때)
 	@GetMapping()
-	public String qna(@PageableDefault Pageable page, Model model) {
+	public String qna(@PageableDefault(size = 20) Pageable pageable
+			, @RequestParam(required = false) String sortColumn
+			, @RequestParam(required = false, defaultValue = "DESC") String sortOrder
+			, @RequestParam(required = false) String searchTerm, Model model) {
+		int limit = pageable.getPageSize();
+		int offset = pageable.getPageNumber() * limit;
 
-		log.info("size=" + page.getPageSize());
-		log.info("page=" + page.getPageNumber());
-		log.info("offset=" + page.getOffset());
-		log.info("sort=" + page.getSort());
-		
-		List<QNA> all = service.findAll(20, 0);
+		List<QNA> all;
+		int totalItems;
 
-		int totalItems = service.count();
-		int totalPages = (int) (Math.ceil((double) totalItems / 20)) - 1;
+		if (searchTerm == null || searchTerm.isEmpty() && sortColumn == null) {
+			// 검색어가 없을 때
+			all = service.findAll(limit, offset);
+			totalItems = service.countAll();
+		} else if (sortColumn != null) {
+			// 검색어는 없는데 정렬기준은 있을때
+			all = service.searchQnasSort(sortColumn, sortOrder, limit, offset);
+			totalItems = service.countAll();
+		} else {
+			// 검색어가 있을 때
+			all = service.searchQnas(searchTerm, sortColumn != null ? sortColumn : "createdAt", sortOrder, limit,
+					offset);
+			totalItems = service.count(searchTerm);
+		}
+
+		int totalPages = (totalItems > 0) ? (int) Math.ceil((double) totalItems / pageable.getPageSize()) - 1 : 0;
+
 		model.addAttribute("qnaList", all);
-		model.addAttribute("totalItems", totalItems); // 총 항목 수 추가
+		model.addAttribute("totalItems", totalItems);
 		model.addAttribute("totalPages", totalPages);
-		return "qna";
-	}
+		model.addAttribute("currentPage", pageable.getPageNumber());
+		model.addAttribute("size", limit);
+		model.addAttribute("searchTerm", searchTerm);
+		model.addAttribute("sortColumn", sortColumn);
+		model.addAttribute("sortOrder", sortOrder);
 
-	// 메인화면 (페이지 요청 있을때)
-	@GetMapping(params = "page")
-	public String qna(Model model, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
-
-		int limit = size;
-		int offset = page * size;
-
-		int totalItems = service.count();
-		int totalPages = (int) (Math.ceil((double) totalItems / size)) - 1;
-
-		List<QNA> all = service.findAll(limit, offset);
-		model.addAttribute("qnaList", all);
-		model.addAttribute("totalPages", totalPages);
-		model.addAttribute("currentPage", page); // 현재 페이지 추가
-		model.addAttribute("size", size); // 페이지 크기 추가
-		model.addAttribute("totalItems", totalItems); // 총 항목 수 추가
-
-		return "qna";
+		return "qna"; // JSP 파일 이름
 	}
 
 	@GetMapping("/{articleId}")
@@ -78,6 +79,7 @@ public class QNA_Controller {
 		model.addAttribute("QNA", byPk);
 		return "qnaDetail";
 	}
+
 	@PostMapping("/{articleId}")
 	public String asdqnaDetail(@PathVariable Integer articleId, Model model) {
 		QNA byPk = service.findById(articleId);
@@ -90,7 +92,7 @@ public class QNA_Controller {
 	public String write() {
 		return "write";
 	}
-	
+
 	// 글작성
 	@PostMapping()
 	public String write(@RequestParam String username, @RequestParam String password, @RequestParam String title,
@@ -116,6 +118,7 @@ public class QNA_Controller {
 
 		return ResponseEntity.ok(response);
 	}
+
 	// 글 수정
 	@GetMapping("/edit/{articleId}")
 	public String getEditInfo(@PathVariable Integer articleId, Model model) {
@@ -123,24 +126,18 @@ public class QNA_Controller {
 		model.addAttribute("QNA", byId);
 		return "edit";
 	}
+
 	@PostMapping("/edit/{articleId}")
-	public String setEdit(@PathVariable Integer articleId, @RequestParam String username, @RequestParam String password, @RequestParam String title,
-			@RequestParam String content, @RequestParam String secure, Model model) {
-		
+	public String setEdit(@PathVariable Integer articleId, @RequestParam String username, @RequestParam String password,
+			@RequestParam String title, @RequestParam String content, @RequestParam String secure, Model model) {
+
 		boolean isSecure = Boolean.parseBoolean(secure);
 		QNA origin = service.findById(articleId);
-		QNA update = QNA.builder()
-				.articleId(articleId)
-				.username(username)
-				.password(password)
-				.title(title)
-				.createdAt(origin.getCreatedAt())
-				.content(content)
-				.secure(isSecure)
-				.build();
-		
+		QNA update = QNA.builder().articleId(articleId).username(username).password(password).title(title)
+				.createdAt(origin.getCreatedAt()).content(content).secure(isSecure).build();
+
 		int result = service.updateQNA(update);
-		
+
 		if (result != 1) {
 			return "notFound";
 		}
@@ -149,7 +146,7 @@ public class QNA_Controller {
 		model.addAttribute("QNA", rebuild);
 		return "qnaDetail";
 	}
-	
+
 	@GetMapping("/delete/{articleId}")
 	public String deleteQNA(@PathVariable Integer articleId) {
 		int result = service.delete(articleId);

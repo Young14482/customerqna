@@ -51,8 +51,8 @@ public class QNA_ServiceImpl implements QNA_Service {
 	}
 
 	@Override
-	public int count() {
-		return mapper.count();
+	public int countAll() {
+		return mapper.countAll();
 	}
 
 	@Override
@@ -64,5 +64,18 @@ public class QNA_ServiceImpl implements QNA_Service {
 	public int delete(Integer artcleId) {
 		return mapper.updateDelete(artcleId);
 	}
-
+	// 검색 및 정렬
+	@Override
+	public List<QNA> searchQnas(String searchTerm, String sortColumn, String sortOrder, int limit, int offset) {
+        return mapper.searchQnas(searchTerm, sortColumn, sortOrder, limit, offset);
+    }
+	// 검색 및 정렬
+	@Override
+	public List<QNA> searchQnasSort(String sortColumn, String sortOrder, int limit, int offset) {
+		return mapper.searchQnasSort(sortColumn, sortOrder, limit, offset);
+	}
+	@Override
+    public int count(String searchTerm) {
+        return mapper.count(searchTerm);
+    }
 }

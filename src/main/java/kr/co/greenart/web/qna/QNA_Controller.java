@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import kr.co.greenart.web.qna.admin.Admin;
+import kr.co.greenart.web.qna.admin.Admin_Service;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +31,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class QNA_Controller {
 	@Autowired
 	private QNA_Service service;
+	@Autowired
+	private Admin_Service aService;
 
 	// 메인화면(페이지 요청 없을때)
 	@GetMapping()
@@ -37,12 +42,11 @@ public class QNA_Controller {
 			, @RequestParam(required = false) String searchTerm, Model model) {
 		int limit = pageable.getPageSize();
 		int offset = pageable.getPageNumber() * limit;
-
 		List<QNA> all;
 		int totalItems;
 
 		if (searchTerm == null || searchTerm.isEmpty() && sortColumn == null) {
-			// 검색어가 없을 때
+			// 검색어랑 정렬이 없을 때
 			all = service.findAll(limit, offset);
 			totalItems = service.countAll();
 		} else if (sortColumn != null) {
@@ -155,4 +159,70 @@ public class QNA_Controller {
 		}
 		return "deleted";
 	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 관리자
+	@GetMapping("/admin/login")
+	public String login(Model model) {
+		return "login";
+	}
+	
+	@PostMapping("/admin/login")
+    public String login(
+            @RequestParam String id,
+            @RequestParam String password,
+            HttpServletRequest request,
+            HttpSession session,
+            @PageableDefault(size = 20) Pageable pageable,@RequestParam(required = false) String sortColumn,
+            @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
+            @RequestParam(required = false) String searchTerm, 
+            Model model) {
+
+        boolean loginSuccessful = false;
+
+        List<Admin> adminList = aService.findAll();
+        
+        String adminId = null;
+
+        if (adminList != null) {
+            for (Admin admin : adminList) {
+                if (admin.getId().equals(id) && admin.getPassword().equals(password)) {
+                    loginSuccessful = true;
+                    adminId = admin.getId();
+                    break;
+                }
+            }
+        }
+        // 로그인 결과에 따른 처리
+        if (loginSuccessful) {
+            session.setAttribute("loggedInAdmin", id);
+            int limit = pageable.getPageSize();
+    		int offset = pageable.getPageNumber() * limit;
+    		List<QNA> all = service.findAll(limit, offset);
+    		int totalItems = service.countAll();
+            
+    		int totalPages = (totalItems > 0) ? (int) Math.ceil((double) totalItems / pageable.getPageSize()) - 1 : 0;
+    		
+            model.addAttribute("qnaList", all);
+    		model.addAttribute("totalItems", totalItems);
+    		model.addAttribute("totalPages", totalPages);
+    		model.addAttribute("currentPage", pageable.getPageNumber());
+    		model.addAttribute("size", limit);
+    		model.addAttribute("searchTerm", searchTerm);
+    		model.addAttribute("sortColumn", sortColumn);
+    		model.addAttribute("sortOrder", sortOrder);
+    		model.addAttribute("adminId", adminId);
+    		
+            return "adminMain"; // 성공 시 리다이렉트
+        } else {
+            model.addAttribute("errorMessage", "로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.");
+            return "login"; // 로그인 페이지로 돌아감
+        }
+    }
+	// TODO : /admin/login으로 리다이렉트 하되 모델 정보를 지닌채로 가야함. >> 카톡 확인
+	@PostMapping("/admin/delete/{articleId}")
+    public void deleteQna(@PathVariable Integer articleId, @RequestParam String id, Model model) {
+        // Q&A 삭제 로직을 여기에 추가
+        service.delete(articleId);
+        model.addAttribute("adminId", id);
+    }
 }

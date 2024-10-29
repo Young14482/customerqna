@@ -1,8 +1,10 @@
-CREATE TABLE IF NOT EXISTS mytable (
+CREATE TABLE IF NOT EXISTS admin (
 	no INT PRIMARY KEY AUTO_INCREMENT
-	, str VARCHAR(20) NOT NULL
+	, id VARCHAR(20) NOT NULL
+	, password VARCHAR(64) NOT NULL
 );
 
+INSERT INTO admin (id, password) VALUES ('admin', 'admin');
 -- 1. 익명 고객센터 문의게시판 테이블을 생성하는 쿼리문을 작성해주세요
 -- 2. 글 작성 쿼리문 
 -- 3. 게시글 목록 (article_id, title, username, is_secure)

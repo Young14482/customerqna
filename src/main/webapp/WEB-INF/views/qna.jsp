@@ -11,6 +11,7 @@
 <body>
     <h1>게시글 목록</h1>
     <a href="/qna/write" class="button">글 작성하기</a>
+    <a href="/qna/admin/login" class="button2">로그인</a>
     
     <!-- 검색 및 정렬 폼 -->
     <form action="/qna" method="get">
@@ -19,7 +20,7 @@
         
         <label for="sortColumn">정렬방식:</label>
         <select id="sortColumn" name="sortColumn">
-            <option value="createdAt" <c:if test="${sortColumn == 'createdAt'}">selected</c:if>>최신순</option>
+            <option value="created_At" <c:if test="${sortColumn == 'createdAt'}">selected</c:if>>최신순</option>
             <option value="views" <c:if test="${sortColumn == 'views'}">selected</c:if>>조회수순</option>
         </select>
         

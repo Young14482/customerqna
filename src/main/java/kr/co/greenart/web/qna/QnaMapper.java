@@ -92,6 +92,7 @@ public interface QnaMapper {
 	@Select("SELECT count(*) FROM customerqna")
 	int countAll();
 	
+	// 글 수정
 	@Update({
 		"UPDATE customerqna SET"
 			, " title = #{title}, "
@@ -104,7 +105,8 @@ public interface QnaMapper {
 			})
 	int updateQNA(QNA qna);
 	
-	 @Select("SELECT * FROM customerqna " +
+	// 검색 및 정렬
+	@Select("SELECT * FROM customerqna " +
 	            "WHERE title LIKE CONCAT('%', #{searchTerm}, '%') " +
 	            "ORDER BY ${sortColumn} ${sortOrder} " +
 	            "LIMIT #{limit} OFFSET #{offset}")
@@ -114,11 +116,13 @@ public interface QnaMapper {
 	                         @Param("sortOrder") String sortOrder,
 	                         @Param("limit") int limit,
 	                         @Param("offset") int offset);
-	 
+	
+	// 검색된 수
 	@Select("SELECT COUNT(*) FROM customerqna " +
 			 "WHERE title LIKE CONCAT('%', #{searchTerm}, '%')")
 	int count(@Param("searchTerm") String searchTerm);
 	
+	// 정렬
 	@Select("SELECT * FROM customerqna " +			 
 			 "ORDER BY ${sortColumn} ${sortOrder} " +
 			 "LIMIT #{limit} OFFSET #{offset}")

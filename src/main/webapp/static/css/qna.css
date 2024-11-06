@@ -27,13 +27,15 @@ tr:hover {
 nav {
 	text-align: center;
 	padding-top: 15px;
-    padding-bottom: 10px;
-    font-size: 20px;
+	padding-bottom: 10px;
+	font-size: 20px;
 }
+
 nav a {
-    text-decoration: none;
-    color: blue;
+	text-decoration: none;
+	color: blue;
 }
+
 .button {
 	float: right; /* 오른쪽 정렬 */
 	margin: 20px; /* 상하 여백 */
@@ -49,6 +51,7 @@ nav a {
 .button:hover {
 	background-color: #0056b3; /* 호버 시 배경색 변화 */
 }
+
 .button2 {
 	float: right; /* 오른쪽 정렬 */
 	margin: 20px; /* 상하 여백 */
@@ -63,4 +66,24 @@ nav a {
 
 .button2:hover {
 	background-color: #f7f7f7; /* 호버 시 배경색 변화 */
+}
+
+.searchBar {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	margin-left: 350px;
+}
+
+.searchBar label, .searchBar select, .searchBar input, .searchBar button
+	{
+	margin: 10px;
+	height: 30px;
+}
+.searchBar input {
+	width: 450px;
+}
+.searchBar button {
+	width: 100px;
 }

@@ -14,11 +14,8 @@
     <a href="/qna/admin/login" class="button2">로그인</a>
     
     <!-- 검색 및 정렬 폼 -->
-    <form action="/qna" method="get">
-        <label for="searchTerm">검색어:</label>
-        <input type="text" id="searchTerm" name="searchTerm" value="${searchTerm}" placeholder="검색어를 입력하세요">
-        
-        <label for="sortColumn">정렬방식:</label>
+    <form action="/qna" method="get" class="searchBar">
+        <label for="sortColumn"></label>
         <select id="sortColumn" name="sortColumn">
             <option value="created_At" <c:if test="${sortColumn == 'createdAt'}">selected</c:if>>최신순</option>
             <option value="views" <c:if test="${sortColumn == 'views'}">selected</c:if>>조회수순</option>
@@ -28,7 +25,8 @@
             <option value="ASC" <c:if test="${sortOrder == 'ASC'}">selected</c:if>>오름차순</option>
             <option value="DESC" <c:if test="${sortOrder == 'DESC'}">selected</c:if>>내림차순</option>
         </select>
-        
+        <label for="searchTerm"></label>
+        <input type="text" id="searchTerm" name="searchTerm" value="${searchTerm}" placeholder="검색어를 입력하세요">
         <button type="submit">검색</button>
     </form>
 

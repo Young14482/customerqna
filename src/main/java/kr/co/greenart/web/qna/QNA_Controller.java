@@ -45,19 +45,18 @@ public class QNA_Controller {
 		List<QNA> all;
 		int totalItems;
 
-		if (searchTerm == null || searchTerm.isEmpty() && sortColumn == null) {
-			// 검색어랑 정렬이 없을 때
-			all = service.findAll(limit, offset);
-			totalItems = service.countAll();
-		} else if (sortColumn != null) {
-			// 검색어는 없는데 정렬기준은 있을때
-			all = service.searchQnasSort(sortColumn, sortOrder, limit, offset);
-			totalItems = service.countAll();
+		if ((searchTerm == null || searchTerm.isEmpty()) && (sortColumn == "" || sortColumn == null)) {
+		    // 검색어랑 정렬이 없을 때
+		    all = service.findAll(limit, offset);
+		    totalItems = service.countAll();
+		} else if (searchTerm == null && sortColumn != "") {
+		    // 검색어는 없는데 정렬기준은 있을 때
+		    all = service.searchQnasSort(sortColumn, sortOrder, limit, offset);
+		    totalItems = service.countAll();
 		} else {
-			// 검색어가 있을 때
-			all = service.searchQnas(searchTerm, sortColumn != null ? sortColumn : "createdAt", sortOrder, limit,
-					offset);
-			totalItems = service.count(searchTerm);
+		    // 검색어가 있을 때
+		    all = service.searchQnas(searchTerm, sortColumn != null ? sortColumn : "createdAt", sortOrder, limit, offset);
+		    totalItems = service.count(searchTerm);
 		}
 
 		int totalPages = (totalItems > 0) ? (int) Math.ceil((double) totalItems / pageable.getPageSize()) - 1 : 0;

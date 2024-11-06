@@ -64,7 +64,6 @@ public interface QnaMapper {
 	@Update("UPDATE customerqna SET views = (views + 1) WHERE article_id = #{articleId}")
 	int updateCount(int articleId);
 
-	// TODO : 선생님이랑 아직안함 >> 혼자 만든 거는 존재
 	// 게시글 조회 (id로 검색, title, content, username)
 	// TODO : 맨끝의 false 나중에 mysql전환할때 0으로
 	@Select("SELECT * FROM customerqna WHERE article_id = #{articleId} AND is_deleted = false")
